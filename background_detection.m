@@ -1,4 +1,5 @@
 %% Opening files/initialization of matrices
+cd um;
 images_jpg=dir('*.jpg');
 images_mat=dir('*.mat');
 images_gray=zeros(480,640,length(images_jpg));
