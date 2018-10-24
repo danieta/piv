@@ -2,16 +2,20 @@
 cd um;
 images_jpg=dir('*.jpg');
 images_mat=dir('*.mat');
+
 images_gray=zeros(480,640,length(images_jpg));
 images_depth=zeros(480,640,length(images_jpg));
+
 for i=1:length(images_jpg),
     images_gray(:,:,i)=rgb2gray(imread(images_jpg(i).name));
     load(images_mat(i).name);
     images_depth(:,:,i)=double(depth_array)/1000;
     figure(1)
     imshow(uint8(images_gray(:,:,i)));
+    title("Gray");
     figure(2);
     imagesc(images_depth(:,:,i));
+    title("Depth");
     %colormap(gray);
     pause(.2);
 end
