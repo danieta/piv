@@ -20,6 +20,7 @@ for i=1:length(images_jpg),
     pause(.2);
 end
 
+
 %% Computing the background for the depth and RGB image sequences given
 background_depth=median(images_depth,3);
 figure(5);
@@ -27,11 +28,13 @@ imagesc(background_depth);
 title("depth background");
 background_gray=median(images_gray,3);
 figure(6);
-imagesc(background_gray);
+imshow(uint8(background_gray));
 title("gray background")
 figure(1);
 subplot(211);imagesc(background_depth);
-subplot(212);imagesc(background_gray);
+subplot(212);imshow(uint8(background_gray));
+
+
 %% Performing background subtraction for depth (we should try with gray too)
 figure(1);clf;
 figure(2);clf;
