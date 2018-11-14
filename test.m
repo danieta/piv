@@ -14,7 +14,7 @@ for i=1:length(loaded_images_rgb),
     figure(2);
     imagesc(images_depth(:,:,i));
     %colormap(gray);
-    im = images_rgb(:,:,i);
+    im = imread(d(i).name);
     
     Kd=Depth_cam.K;
     Z=double(depth_array(:)')/1000;
@@ -34,6 +34,10 @@ for i=1:length(loaded_images_rgb),
         end
     end
     im2=zeros(640*480,3);
+    indsclean=find((u2>=1)&(u2<=641)&(v2>=1)&(v2<=480));
+    indscolor=sub2ind([480 640],v2(indsclean),u2(indsclean));
+    im1aux=reshape(im,[640*480 3]);
+    im2(indsclean,:)=im1aux(indscolor,:);
     pc=pointCloud(P', 'color',uint8(im2));
     figure(3);showPointCloud(pc);
     % figure(4);imshow(uint8(reshape(im2,[480,640,3])));
