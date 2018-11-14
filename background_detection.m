@@ -3,21 +3,20 @@ cd um;
 images_jpg=dir('*.jpg');
 images_mat=dir('*.mat');
 
-images_gray=zeros(480,640,length(images_jpg));
+images_gray=zeros(480,640,3,length(images_jpg));
 images_depth=zeros(480,640,length(images_jpg));
 
 for i=1:length(images_jpg),
-    images_gray(:,:,i)=rgb2gray(imread(images_jpg(i).name));
+    images_gray(:,:,:,i)=(imread(images_jpg(i).name));
     load(images_mat(i).name);
     images_depth(:,:,i)=double(depth_array)/1000;
     figure(1)
-    imshow(uint8(images_gray(:,:,i)));
+    imshow(uint8(images_gray(:,:,:,i)));
     title("Gray");
     figure(2);
     imagesc(images_depth(:,:,i));
     title("Depth");
-    %colormap(gray);
-    pause(.2);
+    %pause(.2);
 end
 
 
@@ -26,13 +25,16 @@ background_depth=median(images_depth,3);
 figure(5);
 imagesc(background_depth);
 title("depth background");
-background_gray=median(images_gray,3);
+background_gray=median(images_gray,4);
 figure(6);
-imshow(uint8(background_gray));
+imagesc(uint8(background_gray));
 title("gray background")
 figure(1);
 subplot(211);imagesc(background_depth);
 subplot(212);imshow(uint8(background_gray));
+
+%xyz1=get_xyz_asus(background_depth(:),[480 640],(1:640*480)', Depth_cam.K,1,0);
+%rgbd1 = get_rgbd(xyz1, im1, R_d_to_rgb, T_d_to_rgb, RGB_cam.K);
 
 %% Performing background subtraction for depth (we should try with gray too)
 figure(1);clf;
@@ -62,5 +64,5 @@ for i=1:length(images_jpg),
     title('Connected components');
     
     
-    pause(.2);
+    %pause(.2);
 end
