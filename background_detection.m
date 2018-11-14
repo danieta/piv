@@ -34,7 +34,6 @@ figure(1);
 subplot(211);imagesc(background_depth);
 subplot(212);imshow(uint8(background_gray));
 
-
 %% Performing background subtraction for depth (we should try with gray too)
 figure(1);clf;
 figure(2);clf;
@@ -42,13 +41,13 @@ figure(2);clf;
 for i=1:length(images_jpg),
     % subtracting the background from the current image to get the
     % difference
-    image_subtracted=abs(images_depth(:,:,i)-background_depth)>.20;
+    depth_subtracted=abs(images_depth(:,:,i)-background_depth)>.20;
     
     % creating a morphologically filtered version of each subtracted image
     % to reduce noise. 'strel' creates a disk. we filter inside that disk
-    image_morphed=imopen(image_subtracted,strel('disk',5));
+    image_morphed=imopen(depth_subtracted,strel('disk',5));
     figure(1);
-    imagesc([image_subtracted image_morphed]);
+    imagesc([depth_subtracted image_morphed]);
     title('Difference image and morph filtered');
     colormap(gray);
     
