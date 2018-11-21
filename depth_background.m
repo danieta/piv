@@ -28,7 +28,7 @@ title("depth background");
 
 figure(1);clf;
 
-filter_criteria = strel('disk',5);
+filter_criteria = strel('disk',10);
 
 for i=1:length(images_jpg),
     %subtract current image and depth background
@@ -57,23 +57,29 @@ for i=1:length(images_jpg),
 %     title("dilated");
 end
 
-image_nr = 5;
+%% Testing the pointcloud generation
 
-image_1 = images_depth(:,:,image_nr);
+%which image to generate pointcloud of
+image_nr = 7;
+
+%corresponding depth foreground and rgb of this image
+imd = foreground_depth_morphed(:,:,image_nr);
 im = double(images_rgb(:,:,:,image_nr));
 
+%reshaping the foreground depth image so it is a long vector instead of
+% being a matrix. this is just so that we can do fast computations in 
+% matlab
+foreground_reshaped=reshape(double(imd),[],1);
+Z=double(foreground_reshaped');
 
-%Z=double(depth_array(:)')/1000;
-Z1=double(foreground_depth_morphed(:,:,image_nr));
-Z2=reshape(Z1,[],1);
-Z=double(Z2');
+%dont really know whats happening here
 [v u]=ind2sub([480 640],(1:480*640));
 P=inv(cam_params.Kdepth)*[Z.*u ;Z.*v;Z];
 niu=cam_params.Krgb*[cam_params.R cam_params.T]*[P;ones(1,640*480)];
 u2=round(niu(1,:)./niu(3,:));
 v2=round(niu(2,:)./niu(3,:));
 
-
+%or here
 im2=zeros(640*480,3);
 indsclean=find((u2>=1)&(u2<=641)&(v2>=1)&(v2<=480));
 indscolor=sub2ind([480 640],v2(indsclean),u2(indsclean));

@@ -28,7 +28,7 @@ title("depth background");
 
 figure(1);clf;
 
-filter_criteria = strel('disk',5);
+filter_criteria = strel('disk',10);
 
 for i=1:length(images_jpg),
     %subtract current image and depth background
@@ -40,7 +40,7 @@ for i=1:length(images_jpg),
     
     figure(1);
     imagesc(foreground_depth_morphed(:,:,i));
-    title("Depth subtracted");
+    title("Foreground morphed");
     
 %     figure(4);
 %     %[labels, number_of_objects] = bwlabel(depth_subtracted(:,:,i));
@@ -57,13 +57,18 @@ for i=1:length(images_jpg),
 %     title("dilated");
 end
 
+%% Testing the pointcloud generation
 
-image_1 = images_depth(:,:,1);
-im = double(images_rgb(:,:,:,1));
+%which image to generate pointcloud of
+image_nr = 7;
 
+%corresponding foreground and rgb of this image
+imd = foreground_depth_morphed(:,:,image_nr);
+im = double(images_rgb(:,:,:,image_nr));
 
-%Z=double(depth_array(:)')/1000;
-Z=double((foreground_depth_morphed(:,:,1)')/1000;
+%
+foreground_reshaped=reshape(double(imd),[],1);
+Z=double(foreground_reshaped');
 [v u]=ind2sub([480 640],(1:480*640));
 P=inv(cam_params.Kdepth)*[Z.*u ;Z.*v;Z];
 niu=cam_params.Krgb*[cam_params.R cam_params.T]*[P;ones(1,640*480)];
@@ -78,4 +83,4 @@ im1aux=reshape(im,[640*480 3]);
 im2(indsclean,:)=im1aux(indscolor,:);
 
 pc=pointCloud(P', 'color',uint8(im2));
-figure(1);showPointCloud(pc);
+figure(3);showPointCloud(pc);
