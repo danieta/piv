@@ -53,9 +53,39 @@ end
 %which image to generate pointcloud of
 image_nr = 5;
 
+[labels, number_of_objects] = bwlabel(foreground_depth_morphed(:,:,image_nr));
+bounding_boxes = regionprops(labels, 'BoundingBox');
+
+figure(10);
+imagesc(foreground_depth_morphed(:,:,image_nr));
+
+for i=1:number_of_objects
+    %dimensions of the current box
+    start_x = int32(bounding_boxes(i).BoundingBox(1));
+    start_y = int32(bounding_boxes(i).BoundingBox(2));
+    width = int32(bounding_boxes(i).BoundingBox(3));
+    height = int32(bounding_boxes(i).BoundingBox(4));
+    if (width * height <= 800)
+        for j=start_x:start_x+width
+            for k=start_y:start_y+height
+                foreground_depth_morphed(k,j,image_nr) = 0;
+            end
+        end
+    end
+end
+
+figure(11);
+imagesc(foreground_depth_morphed(:,:,image_nr));
+hold on;
+[labels, number_of_objects] = bwlabel(foreground_depth_morphed(:,:,image_nr));
+bounding_boxes = regionprops(labels, 'BoundingBox');
+for i=1:number_of_objects
+    rectangle('Position', bounding_boxes(i).BoundingBox, 'EdgeColor','r', 'LineWidth', 3);
+    hold on;
+end
+
 %Use bwlabel to plot the elements in 'labels' that are not 0 (that are not
 % background objects)
-[labels, number_of_objects] = bwlabel(foreground_depth_morphed(:,:,image_nr));
 index_filtered_to_pc = find(foreground_depth_morphed(:,:,image_nr) ~= 0);
 
 %corresponding depth foreground and rgb of this image
@@ -65,7 +95,6 @@ im = double(images_rgb(:,:,:,image_nr));
 %reshaping the foreground depth image so it is a long vector instead of
 % being a matrix. this is just so that we can do fast computations in 
 % matlab
-
 foreground_reshaped=reshape(double(imd),[],1);
 Z=double(foreground_reshaped');
 
