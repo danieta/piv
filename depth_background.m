@@ -78,7 +78,7 @@ end
 
 figure(11);
 imagesc(foreground_depth_morphed(:,:,image_nr));
-hold on;
+% hold on;
 
 %Get the moving elements that remain after removing noise
 [labels, number_of_objects] = bwlabel(foreground_depth_morphed(:,:,image_nr));
@@ -105,7 +105,7 @@ for i=1:number_of_objects
     %objects(i).x
 end
 
-%Keep the pixels that are non-zero, that is, the pixels of the moving objects
+% Keep the pixels that are non-zero, that is, the pixels of the moving objects
 for i=1:number_of_objects
     index_objects(:,1)= find(foreground_depth_morphed(:,:,image_nr) ~= 0);
     index_objects(:,2) = object_label(index_objects(:,1));
@@ -128,16 +128,16 @@ P=inv(cam_params.Kdepth)*[Z.*u; Z.*v; Z];
 
 
 %deletes the background from the PC
-a=1;
-for frame_number=1:length(P)
-    if frame_number==index_objects(a,1)
-        if a < length(index_objects)
-            a=a+1;
-        end
-    else 
-        P(:, frame_number)=[0 0 0];
-    end
-end
+% a=1;
+% for frame_number=1:length(P)
+%     if frame_number==index_objects(a,1)
+%         if a < length(index_objects)
+%             a=a+1;
+%         end
+%     else 
+%         P(:, frame_number)=[0 0 0];
+%     end
+% end
 
 %computing the homogeneous coordinates of the image projected from the
 %pointcloud
@@ -156,14 +156,17 @@ indscolor=sub2ind([480 640],v2(indsclean),u2(indsclean));
 im1aux=reshape(im,[640*480 3]);
 im2(indsclean,:)=im1aux(indscolor,:);
 
-pc=pointCloud(P', 'color',uint8(im2));
+PCdiga=P(:,objects(1).indeces(:));
+pc=pointCloud(PCdiga', 'color',uint8(im2(objects(1).indeces(:),:)));
 figure(3);showPointCloud(pc);
-
+% 
 B = P(1,objects(1).indeces(:));
-max( B( B < 0 ) )
-
+x_max = max( B( B < 0 ) )
+x_min = min( B )
+C = P(2,objects(1).indeces(:));
+y_max = max(
 % for i=1:number_of_objects
-%     max(index_objects(:,3)
+    max(index_objects(:,3)
 
 % depth_1 = foreground_depth(:,:,5);
 % figure(28); imagesc(depth_1);

@@ -22,7 +22,7 @@ figure(2);
 imagesc(bg_depth);
 title("depth background");
 
-filter_criteria = strel('disk',7);
+filter_criteria = strel('disk',20);
 
 for frame_number=1:length(images_jpg),
     %subtract current image and depth background
@@ -51,7 +51,7 @@ end
 %% Removing noise components that the morph filter didn't
 
 %which image to generate pointcloud of
-image_nr = 5;
+image_nr = 15;
 
 %Get the moving elements in the image in question
 [labels, number_of_objects] = bwlabel(foreground_depth_morphed(:,:,image_nr));
@@ -97,20 +97,20 @@ objects = struct;
 for i=1:number_of_objects
     objects(i).indeces = find(labels == i);
     objects(i).zvalues = depth_reshaped(objects(i).indeces(:));
-    objects(i).xvalues = 
-    objects(i).yvalues = 
+%     objects(i).xvalues = 
+%     objects(i).yvalues = 
     objects(i).zmax = max(objects(i).zvalues(:));
     A = objects(i).zvalues(:);
     objects(i).zmin = min( A (A > 0) );
-    objects(i).x
+    %objects(i).x
 end
 
 %Keep the pixels that are non-zero, that is, the pixels of the moving objects
-for i=1:number_of_objects
-    index_objects(:,1)= find(foreground_depth_morphed(:,:,image_nr) ~= 0);
-    index_objects(:,2) = object_label(index_objects(:,1));
-    index_objects(:,3) = depth_reshaped(index_objects(:,1));
-end
+% for i=1:number_of_objects
+%     index_objects(:,1)= find(foreground_depth_morphed(:,:,image_nr) ~= 0);
+%     index_objects(:,2) = object_label(index_objects(:,1));
+%     index_objects(:,3) = depth_reshaped(index_objects(:,1));
+% end
 
 
 %corresponding depth foreground and rgb of this image
@@ -158,9 +158,13 @@ im2(indsclean,:)=im1aux(indscolor,:);
 
 pc=pointCloud(P', 'color',uint8(im2));
 figure(3);showPointCloud(pc);
-hold on;
-
-% for i=1:number_of_objects
+% 
+% B = P(1,objects(1).indeces(:));
+% x_max = max( B( B < 0 ) )
+% x_min = min( B )
+% C = P(2,objects(1).indeces(:));
+% y_max = max(
+% % for i=1:number_of_objects
 %     max(index_objects(:,3)
 
 % depth_1 = foreground_depth(:,:,5);
