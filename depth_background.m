@@ -143,11 +143,12 @@ depth_1 = foreground_depth(:,:,5);
 figure(28); imagesc(depth_1);
 depth_1=double((reshape((depth_1),[],1)));
 
-b = foreground_depth_morphed(:,:,1);
-c = foreground_depth(:,:,1);
-d = b.*c;
+b = foreground_depth_morphed(:,:,5);
+c = foreground_depth(:,:,5);
+d = images_depth(:,:,5).*b;
 e = reshape(d, [], 1);
-f = logical(images_rgb(:,:,:,1)).*b;
+% f = logical(images_rgb(:,:,:,5)).*b;
+f = images_rgb(:,:,:,5);
 
 xyz1=get_xyz_asus(e',[480 640],(1:640*480)', cam_params.Kdepth,1,0);
 rgbd1 = get_rgbd(xyz1, f, cam_params.R, cam_params.T, cam_params.Krgb);
