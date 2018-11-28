@@ -22,7 +22,7 @@ figure(2);
 imagesc(bg_depth);
 title("depth background");
 
-filter_criteria = strel('disk',7);
+filter_criteria = strel('disk',20);
 
 for frame_number=1:length(images_jpg),
     %subtract current image and depth background
@@ -89,9 +89,29 @@ for i=1:number_of_objects
 end
 
 %% Testing the pointcloud generation
+object_label=reshape(double(labels),[],1);
+depth_reshaped=reshape(double(images_depth(:,:,image_nr)),[],1);
+
+objects = struct;
+
+for i=1:number_of_objects
+    objects(i).indeces = find(labels == i);
+    objects(i).zvalues = depth_reshaped(objects(i).indeces(:));
+%     objects(i).xvalues = 
+%     objects(i).yvalues = 
+    objects(i).zmax = max(objects(i).zvalues(:));
+    A = objects(i).zvalues(:);
+    objects(i).zmin = min( A (A > 0) );
+    %objects(i).x
+end
 
 %Keep the pixels that are non-zero, that is, the pixels of the moving objects
-index_filtered_to_pc = find(foreground_depth_morphed(:,:,image_nr) ~= 0);
+for i=1:number_of_objects
+    index_objects(:,1)= find(foreground_depth_morphed(:,:,image_nr) ~= 0);
+    index_objects(:,2) = object_label(index_objects(:,1));
+    index_objects(:,3) = depth_reshaped(index_objects(:,1));
+end
+
 
 %corresponding depth foreground and rgb of this image
 imd = images_depth(:,:,image_nr);
@@ -110,8 +130,8 @@ P=inv(cam_params.Kdepth)*[Z.*u; Z.*v; Z];
 %deletes the background from the PC
 a=1;
 for frame_number=1:length(P)
-    if frame_number==index_filtered_to_pc(a)
-        if a < length(index_filtered_to_pc)
+    if frame_number==index_objects(a,1)
+        if a < length(index_objects)
             a=a+1;
         end
     else 
@@ -139,19 +159,25 @@ im2(indsclean,:)=im1aux(indscolor,:);
 pc=pointCloud(P', 'color',uint8(im2));
 figure(3);showPointCloud(pc);
 
-depth_1 = foreground_depth(:,:,5);
-figure(28); imagesc(depth_1);
-depth_1=double((reshape((depth_1),[],1)));
+B = P(1,objects(1).indeces(:));
+max( B( B < 0 ) )
 
-b = foreground_depth_morphed(:,:,5);
-c = foreground_depth(:,:,5);
-d = images_depth(:,:,5).*b;
-e = reshape(d, [], 1);
+% for i=1:number_of_objects
+%     max(index_objects(:,3)
+
+% depth_1 = foreground_depth(:,:,5);
+% figure(28); imagesc(depth_1);
+% depth_1=double((reshape((depth_1),[],1)));
+% 
+% b = foreground_depth_morphed(:,:,5);
+% c = foreground_depth(:,:,5);
+% d = images_depth(:,:,5).*b;
+% e = reshape(d, [], 1);
 % f = logical(images_rgb(:,:,:,5)).*b;
-f = images_rgb(:,:,:,5);
-
-xyz1=get_xyz_asus(e',[480 640],(1:640*480)', cam_params.Kdepth,1,0);
-rgbd1 = get_rgbd(xyz1, f, cam_params.R, cam_params.T, cam_params.Krgb);
-
-pc2=pointCloud(xyz1,'Color',reshape(rgbd1,[480*640 3]));
-figure(27);showPointCloud(pc2);
+% %f = images_rgb(:,:,:,5);
+% 
+% xyz1=get_xyz_asus(e',[480 640],(1:640*480)', cam_params.Kdepth,1,0);
+% rgbd1 = get_rgbd(xyz1, f, cam_params.R, cam_params.T, cam_params.Krgb);
+% 
+% pc2=pointCloud(xyz1,'Color',reshape(rgbd1,[480*640 3]));
+% figure(27);showPointCloud(pc2);
