@@ -97,12 +97,13 @@ objects = struct;
 for i=1:number_of_objects
     objects(i).indeces = find(labels == i);
     objects(i).zvalues = depth_reshaped(objects(i).indeces(:));
-%     objects(i).xvalues = 
+    %by manipulating to array Pwe dont need this in the struct
+%     objects(i).xvalues =   
 %     objects(i).yvalues = 
-    objects(i).zmax = max(objects(i).zvalues(:));
-    A = objects(i).zvalues(:);
-    objects(i).zmin = min( A (A > 0) );
-    %objects(i).x
+%     objects(i).zmax = max(objects(i).zvalues(:));
+%     A = objects(i).zvalues(:);
+%     objects(i).zmin = min( A (A > 0) );
+%     objects(i).x
 end
 
 % Keep the pixels that are non-zero, that is, the pixels of the moving objects
@@ -155,18 +156,33 @@ indscolor=sub2ind([480 640],v2(indsclean),u2(indsclean));
 %corrected with im_pC
 im1aux=reshape(im,[640*480 3]);
 im2(indsclean,:)=im1aux(indscolor,:);
+% project in the point cloud only the objectes detected
 
-PCdiga=P(:,objects(1).indeces(:));
-pc=pointCloud(PCdiga', 'color',uint8(im2(objects(1).indeces(:),:)));
-figure(3);showPointCloud(pc);
-% 
-B = P(1,objects(1).indeces(:));
-x_max = max( B( B < 0 ) )
-x_min = min( B )
-C = P(2,objects(1).indeces(:));
-y_max = max(
 % for i=1:number_of_objects
-    max(index_objects(:,3)
+    PCdiga=P(:,objects(1).indeces(:));
+    pc=pointCloud(PCdiga', 'color',uint8(im2(objects(1).indeces(:),:)));
+    figure(3);showPointCloud(pc);
+    hold on;
+    % 
+
+    B = P(1,objects(1).indeces(:));
+    x_max = max( B( B < 0 ) );
+    x_min = min( B );
+    C = P(2,objects(1).indeces(:));
+    y_max = max( C );
+    y_min = min( C );
+    D = P(3,objects(1).indeces(:));
+    z_max = max( C );
+    z_min = min( C (C < 0));
+    figure(25)
+    plot( plot::Box([x_min, y_min, z_min], [x_max, y_max, z_max], Filled = FALSE, LineColor = RGB::Red),
+         Axes = None, Scaling = Constrained);
+      
+%       b := plot::Box([x_min, y_min, z_min], [x_max, y_max, z_max]);
+%       plot(b)
+         
+% end
+
 
 % depth_1 = foreground_depth(:,:,5);
 % figure(28); imagesc(depth_1);
