@@ -1,9 +1,7 @@
-%% Opening files/initialization of matrices
-load camera_parameters;
-cd um;
+function  track3D_part1( imgseq1,   cam_params )
 
-images_jpg=dir('*.jpg');
-images_mat=dir('*.mat');
+images_jpg=imgseq1(:).rgb;
+images_mat=imgseq1(:).depth;
 
 images_depth=zeros(480,640,length(images_jpg));
 
@@ -175,10 +173,10 @@ im2(indsclean,:)=im1aux(indscolor,:);
     z_max = max( D );
     z_min = min( D ( D > 0 ));
 %     figure(23)
-    plot3( [x_max x_max x_max x_max x_max], [y_max y_max y_min y_min y_max], [z_max z_min z_min z_max z_max] );
-    plot3( [x_max x_min x_min x_max x_max], [ y_min y_min y_min y_min y_min], [z_min z_min z_max z_max z_min] );
-    plot3( [x_max x_max x_max x_max x_max], [y_max y_max y_min y_min y_max], [z_max z_min z_min z_max z_max] );
-    plot3( [x_max x_max x_max x_max x_max], [y_max y_max y_min y_min y_max], [z_max z_min z_min z_max z_max] );
+    plot3( [x_max x_max x_max x_max x_max], [y_max y_max y_min y_min y_max], [z_max z_min z_min z_max z_max], 'g', 'LineWidth', 2 );
+    plot3( [x_max x_min x_min x_max x_max], [ y_min y_min y_min y_min y_min], [z_min z_min z_max z_max z_min], 'g', 'LineWidth', 2 );
+    plot3( [x_max x_max x_min x_min x_max], [y_max y_max y_max y_max y_max], [z_max z_min z_min z_max z_max], 'g', 'LineWidth', 2 );
+    plot3( [x_min x_min x_min x_min x_min], [y_min y_min y_max y_max y_min], [z_max z_min z_min z_max z_max],  'g', 'LineWidth', 2 );
 %     plot( plot::Box([x_min, y_min, z_min], [x_max, y_max, z_max], Filled = FALSE, LineColor = RGB::Red),
 % %          Axes = None, Scaling = Constrained);
 %     plot(plot::Line3d([x_max, y_max, z_max], [x_max, y_min, z_max]),
@@ -207,3 +205,4 @@ im2(indsclean,:)=im1aux(indscolor,:);
 % 
 % pc2=pointCloud(xyz1,'Color',reshape(rgbd1,[480*640 3]));
 % figure(27);showPointCloud(pc2);
+end

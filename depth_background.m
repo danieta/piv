@@ -172,12 +172,19 @@ im2(indsclean,:)=im1aux(indscolor,:);
     y_max = max( C );
     y_min = min( C );
     D = P(3,objects(1).indeces(:));
-    z_max = max( C );
-    z_min = min( C (C < 0));
-    figure(25)
-    plot( plot::Box([x_min, y_min, z_min], [x_max, y_max, z_max], Filled = FALSE, LineColor = RGB::Red),
-         Axes = None, Scaling = Constrained);
-      
+    z_max = max( D );
+    z_min = min( D ( D > 0 ));
+%     figure(23)
+    plot3( [x_max x_max x_max x_max x_max], [y_max y_max y_min y_min y_max], [z_max z_min z_min z_max z_max], 'g', 'LineWidth', 2 );
+    plot3( [x_max x_min x_min x_max x_max], [ y_min y_min y_min y_min y_min], [z_min z_min z_max z_max z_min], 'g', 'LineWidth', 2 );
+    plot3( [x_max x_max x_min x_min x_max], [y_max y_max y_max y_max y_max], [z_max z_min z_min z_max z_max], 'g', 'LineWidth', 2 );
+    plot3( [x_min x_min x_min x_min x_min], [y_min y_min y_max y_max y_min], [z_max z_min z_min z_max z_max],  'g', 'LineWidth', 2 );
+%     plot( plot::Box([x_min, y_min, z_min], [x_max, y_max, z_max], Filled = FALSE, LineColor = RGB::Red),
+% %          Axes = None, Scaling = Constrained);
+%     plot(plot::Line3d([x_max, y_max, z_max], [x_max, y_min, z_max]),
+%          plot::Line3d([[x_max, y_min, z_max]], [[x_min, y_min, z_max]]), 
+%          plot::Line3d([x_min, y_min, z_max], [x_min, y_min, z_min]), 
+%          Tubular = TRUE, TubeDiameter = 5.0*unit::mm)  
 %       b := plot::Box([x_min, y_min, z_min], [x_max, y_max, z_max]);
 %       plot(b)
          
