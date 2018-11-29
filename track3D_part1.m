@@ -16,9 +16,6 @@ number_of_frames = frame_number;
 cd ..;
 %% Computing the background for the depth sequences given
 bg_depth=median(images_depth,3);
-figure(2);
-imagesc(bg_depth);
-title("depth background");
 
 filter_criteria = strel('disk',20);
 
@@ -29,20 +26,7 @@ for frame_number=1:length(images_jpg),
     %morph filter every depth image. remove noise components
     foreground_depth_morphed(:,:,frame_number)=imopen(foreground_depth(:,:,frame_number),filter_criteria);
     
-    
-    figure(1);
-    imagesc(foreground_depth_morphed(:,:,frame_number));
-    title("Foreground morphed");
-    
-%     figure(4);
-%     [labels, number_of_objects] = bwlabel(foreground_depth(:,:,frame_number));
-%     labels = regionprops(foreground_depth_morphed(:,:,frame_number));
-%     centroids = cat(1, labels.BoundingBox);
-%     imshow(foreground_depth_morphed(:,:,frame_number));
-%     hold on;
-%     plot(centroids(:,1),centroids(:,2), 'b*')
-%     hold off;
-%     title("bwlabel test");
+
 end
 
 
